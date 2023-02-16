@@ -1,5 +1,6 @@
 import React from "react";
-import { TabMenu, TabMenuTabChangeEvent } from "primereact/tabmenu";
+import { Menubar } from "primereact/menubar";
+import { MenuItem, MenuItemCommandEvent } from "primereact/menuitem";
 import { Outlet, useNavigate } from "react-router-dom";
 import ToastWrapper from "./toast";
 
@@ -7,27 +8,45 @@ export default function Header() {
   const [index, setIndex] = React.useState(0);
   const navigate = useNavigate();
 
-  const items = [
-    { label: "Главная", icon: "pi pi-fw pi-home", path: "/" },
-    { label: "Преподаватели", icon: "pi pi-fw pi-user", path: "/teachers" },
-    { label: "Студенты", icon: "pi pi-fw pi-users", path: "/students" },
-    { label: "Занятия", icon: "pi pi-fw pi-table", path: "/schedule" },
-    { label: "Настройки", icon: "pi pi-fw pi-cog", path: "/settings" },
-  ];
-
-  const onClick = (e: TabMenuTabChangeEvent) => {
-    setIndex(e.index);
-    navigate(items[e.index].path);
+  const command = (event: MenuItemCommandEvent) => {
+    if (event.item.id) {
+      navigate(event.item.id);
+    }
   };
+
+  const items: MenuItem[] = [
+    {
+      label: "Главная",
+      icon: "pi pi-fw pi-home",
+      id: "/",
+      command,
+    },
+    {
+      label: "Преподаватели",
+      icon: "pi pi-fw pi-user",
+      id: "/teachers",
+      command,
+    },
+    {
+      label: "Студенты",
+      icon: "pi pi-fw pi-users",
+      id: "/students",
+      items: [
+        {
+          label: "Группы",
+          icon: "pi pi-fw pi-book",
+          id: "/students/groups",
+          command,
+        },
+      ],
+    },
+    { label: "Занятия", icon: "pi pi-fw pi-table", id: "/schedule", command },
+    { label: "Настройки", icon: "pi pi-fw pi-cog", id: "/settings", command },
+  ];
 
   return (
     <>
-      <TabMenu
-        model={items}
-        className="header"
-        activeIndex={index}
-        onTabChange={onClick}
-      />
+      <Menubar model={items} className="header" />
       <Outlet />
       <ToastWrapper />
     </>

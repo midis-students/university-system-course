@@ -4,7 +4,16 @@ body {
   font-family: Poppins, sans-serif;
 }
 
-.header .p-tabmenuitem:nth-last-child(2) {
+.header {
+  border-radius: 0;
+  padding: 0;
+}
+
+.header > .p-menubar-root-list {
+  width: 100%;
+}
+
+.header .p-menuitem:last-child {
   margin-left: auto;
 }
 
