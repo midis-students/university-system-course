@@ -1,0 +1,13 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Poppins, sans-serif;
+}
+
+.header .p-tabmenuitem:nth-last-child(2) {
+  margin-left: auto;
+}
+
+main {
+  margin: 1rem;
+}
