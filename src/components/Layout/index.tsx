@@ -22,6 +22,12 @@ export default function Header() {
       command,
     },
     {
+      label: "Кафедра",
+      icon: "pi pi-fw pi-sitemap",
+      id: "/cathedra",
+      command,
+    },
+    {
       label: "Преподаватели",
       icon: "pi pi-fw pi-user",
       id: "/teachers",
