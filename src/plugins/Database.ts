@@ -5,6 +5,12 @@ import entities from "../entities";
 import { Colors } from "../lib/Colors";
 import { SQLQuery } from "../types/global";
 
+declare module "fastify" {
+  interface FastifyInstance {
+    query: <T extends Object = {}>(sql: string) => Promise<T[]>;
+  }
+}
+
 const DatabasePlugin: FastifyPluginAsync = async (fastify) => {
   const logger = fastify.log.child({ name: "MySQL" });
 
@@ -20,24 +26,9 @@ const DatabasePlugin: FastifyPluginAsync = async (fastify) => {
     database: process.env.MYSQL_DATABASE,
   });
 
-  const query: SQLQuery<unknown> = async (sql) => {
-    try {
-      const [rows] = await pool.query(sql);
-
-      const result = {};
-
-      if (rows instanceof Array) {
-        for (const row of rows) {
-          Object.assign(result, row);
-        }
-      }
-
-      return result;
-    } catch (e) {
-      logger.info(sql);
-      logger.error(e);
-    }
-    return null;
+  const query = async <T extends Object = {}>(sql): Promise<T[]> => {
+    const [rows] = await pool.query(sql);
+    return rows as T[];
   };
 
   await query("SELECT 1");
@@ -51,6 +42,8 @@ const DatabasePlugin: FastifyPluginAsync = async (fastify) => {
   });
 
   await Promise.all(promises);
+
+  fastify.decorate("query", query);
 
   logger.info("MySQL ready for work");
 };

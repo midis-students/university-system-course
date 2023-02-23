@@ -6,6 +6,7 @@ import Sensible from "@fastify/sensible";
 import AutoLoad from "@fastify/autoload";
 import { resolve } from "path";
 import S from "fluent-json-schema";
+import TestRunner from "./TestRunner";
 
 const app: FastifyPluginAsync = async (fastify, options) => {
   await fastify.register(Env, {
@@ -24,7 +25,7 @@ const app: FastifyPluginAsync = async (fastify, options) => {
 
   await fastify.register(Cors, {
     origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   });
   await fastify.register(Sensible);
 
@@ -37,6 +38,10 @@ const app: FastifyPluginAsync = async (fastify, options) => {
     dir: resolve("dist/routes"),
     dirNameRoutePrefix: false,
     options,
+  });
+
+  await fastify.register(TestRunner, {
+    dir: resolve("dist/tests"),
   });
 };
 

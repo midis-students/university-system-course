@@ -17,9 +17,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^18.13.0",
+    "@types/node": "^18.14.0",
     "tsconfig-paths": "^4.1.2",
-    "tsup": "^6.6.2"
+    "tsup": "^6.6.3"
   },
   "dependencies": {
     "@fastify/autoload": "^5.7.1",
@@ -28,8 +28,8 @@
     "@fastify/sensible": "^5.2.0",
     "fastify": "^4.13.0",
     "fastify-plugin": "^4.5.0",
-    "fluent-json-schema": "^4.0.0",
+    "fluent-json-schema": "^4.1.0",
     "mysql2": "^3.1.2",
-    "pino-pretty": "^9.2.0"
+    "pino-pretty": "^9.3.0"
   }
 }

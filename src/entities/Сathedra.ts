@@ -4,7 +4,7 @@ import { Entity } from "./Entity";
 export class Cathedra extends Entity {
   static override definition = [
     Field("name", "VARCHAR(128)"),
-    Field("phone", "VARCHAR(10)"),
+    Field("phone", `VARCHAR(12) DEFAULT "" `),
   ];
 
   name: string;
