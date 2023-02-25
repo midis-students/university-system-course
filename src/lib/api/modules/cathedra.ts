@@ -1,29 +1,30 @@
-import Api from "..";
-import { Cathedra } from "../type";
+import Api from '..';
+import { Cathedra } from '../type';
 
 export class CathedraModule {
   constructor(private api: Api) {}
 
-  #path = "cathedra";
+  #path = 'cathedra';
 
   getAll() {
     return this.api.request<Cathedra[]>(this.#path, {
-      method: "GET",
+      method: 'GET',
     });
   }
 
-  create(name: string) {
+  create(name: string, phone: string) {
     return this.api.request<Cathedra>(this.#path, {
-      method: "POST",
+      method: 'POST',
       body: {
         name,
+        phone,
       },
     });
   }
 
   update(id: number, body: Partial<Cathedra>) {
     return this.api.request<Cathedra>(this.#path, {
-      method: "PATCH",
+      method: 'PATCH',
       body: {
         id,
         ...body,

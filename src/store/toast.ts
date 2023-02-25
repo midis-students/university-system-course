@@ -1,5 +1,6 @@
-import { create } from "zustand";
-import { ToastMessage, Toast } from "primereact/toast";
+import { create } from 'zustand';
+import { ToastMessage, Toast } from 'primereact/toast';
+import { TOAST_LIFE } from '@/config/toast';
 
 type ToastStore = {
   ref: Toast | null;
@@ -9,7 +10,7 @@ type ToastStore = {
 
 export const useToast = create<ToastStore>((set, get) => ({
   ref: null,
-  show: (message) => get().ref?.show(message),
+  show: (message) => get().ref?.show({ ...message, life: TOAST_LIFE }),
   setRef: (ref) => set({ ref }),
 }));
 
