@@ -6,11 +6,11 @@ import { InputText } from 'primereact/inputtext';
 import { InputMask } from 'primereact/inputmask';
 import { Dialog } from 'primereact/dialog';
 import Api from '@/lib/api';
-import { Cathedra } from '@/lib/api/type';
+import { Cathedra } from '@/lib/api/entities';
 import { useAllCathedras } from '@/hooks/query/cathedra';
 import { useShowToast } from '@/store/toast';
 import { useInput } from '@/hooks/useInput';
-import { phoneFormat, phoneNormalise } from '@/lib/api/tools';
+import { phoneFormat, phoneNormalise } from '@/lib/tools';
 
 export default function CathedraPage() {
   const toast = useShowToast();
@@ -25,7 +25,7 @@ export default function CathedraPage() {
     const phone = phoneNormalise(phoneInput.value);
 
     if (name && phone && phone.startsWith('+7')) {
-      await Api.instance.cathedra.create(name, phone);
+      await Api.instance.cathedra.create({ name, phone });
       await refetch();
       setVisible(false);
     }
