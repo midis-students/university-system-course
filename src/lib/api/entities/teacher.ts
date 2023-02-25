@@ -7,8 +7,8 @@ export class Teacher extends Entity {
   last_name: string;
   second_name: string;
   sex: boolean;
-  birth_data: number;
-  cathedra: Cathedra;
+  birth_date: string;
+  cathedra: Cathedra | number;
   degree: string;
   phone: string;
 }

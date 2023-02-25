@@ -11,21 +11,25 @@ import { useAllCathedras } from '@/hooks/query/cathedra';
 import { useShowToast } from '@/store/toast';
 import { useInput } from '@/hooks/useInput';
 import { phoneFormat, phoneNormalise } from '@/lib/tools';
+import { useForm } from '@/hooks/useForm';
 
 export default function CathedraPage() {
   const toast = useShowToast();
   const { data, isLoading, refetch } = useAllCathedras();
   const [visible, setVisible] = useState(false);
-  const nameInput = useInput('');
-  const phoneInput = useInput('');
+
+  const form = useForm({
+    name: '',
+    phone: '',
+  });
 
   const create = async () => {
-    const { value: name } = nameInput;
+    const { data } = form;
 
-    const phone = phoneNormalise(phoneInput.value);
+    data.phone = phoneNormalise(data.phone);
 
-    if (name && phone && phone.startsWith('+7')) {
-      await Api.instance.cathedra.create({ name, phone });
+    if (data.name && data.phone.length == 12) {
+      await Api.instance.cathedra.create(data);
       await refetch();
       setVisible(false);
     }
@@ -39,11 +43,15 @@ export default function CathedraPage() {
           <div className="flex flex-column gap-2">
             <label className="flex flex-column gap-2">
               Название
-              <InputText placeholder="Кафедра - " {...nameInput} />
+              <InputText placeholder="Кафедра - " {...form.handle('name')} />
             </label>
             <label className="flex flex-column gap-2">
               Номер телефона
-              <InputMask mask="+7 (999) 999-9999" placeholder="+7 (999) 999-9999" {...phoneInput} />
+              <InputMask
+                mask="+7 (999) 999-9999"
+                placeholder="+7 (999) 999-9999"
+                {...form.handle('phone')}
+              />
             </label>
             <Button onClick={create}>Создать</Button>
           </div>
