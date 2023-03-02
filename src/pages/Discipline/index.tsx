@@ -3,35 +3,29 @@ import { Column } from "primereact/column";
 import { DataTable, DataTableRowEditCompleteEvent } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { InputMask } from "primereact/inputmask";
 import { Dialog } from "primereact/dialog";
 import Api from "@/lib/api";
+import { Cathedra } from "@/lib/api/entities";
 import { useShowToast } from "@/store/toast";
-import { phoneFormat, phoneNormalise } from "@/lib/tools";
 import { useForm } from "@/hooks/useForm";
 import { textEditor } from "@/lib/editors";
 import { useFindAll } from "@/hooks/query/getAll";
 import { extractModuleEntity } from "@/lib/api/module";
 
-const module = Api.instance.cathedra;
+const module = Api.instance.discipline;
 type ModuleEntity = extractModuleEntity<typeof module>;
 
-export default function CathedraPage() {
+export default function DisciplinePage() {
   const toast = useShowToast();
   const { data, isLoading, refetch } = useFindAll(module);
   const [visible, setVisible] = useState(false);
 
   const form = useForm<Omit<ModuleEntity, "id">>({
     name: "",
-    phone: "",
   });
-
   const create = async () => {
     const { data } = form;
-
-    data.phone = phoneNormalise(data.phone);
-
-    if (data.name && data.phone.length == 12) {
+    if (data.name) {
       await module.create(data);
       await refetch();
       setVisible(false);
@@ -48,22 +42,14 @@ export default function CathedraPage() {
           onClick={() => setVisible(true)}
         />
         <Dialog
-          header="Добавить кафедру"
+          header="Добавить дисциплину"
           visible={visible}
           onHide={() => setVisible(false)}
         >
           <div className="flex flex-column gap-2">
             <label className="flex flex-column gap-2">
               Название
-              <InputText placeholder="Кафедра - " {...form.handle("name")} />
-            </label>
-            <label className="flex flex-column gap-2">
-              Номер телефона
-              <InputMask
-                mask="+7 (999) 999-9999"
-                placeholder="+7 (999) 999-9999"
-                {...form.handle("phone")}
-              />
+              <InputText placeholder="Дисциплина - " {...form.handle("name")} />
             </label>
             <Button onClick={create}>Создать</Button>
           </div>
@@ -73,7 +59,7 @@ export default function CathedraPage() {
   };
 
   const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
-    const newData = e.newData as ModuleEntity;
+    const newData = e.newData as Cathedra;
     try {
       await module.update(newData.id, newData);
       await refetch();
@@ -100,12 +86,6 @@ export default function CathedraPage() {
       >
         <Column field="id" header="№" style={{ maxWidth: "2em" }} />
         <Column field="name" header="Название" editor={textEditor} />
-        <Column
-          field="phone"
-          header="Телефон"
-          body={(value) => phoneFormat(value.phone)}
-          editor={textEditor}
-        />
         <Column
           rowEditor
           headerStyle={{ width: "10%", minWidth: "8rem" }}

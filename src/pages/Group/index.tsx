@@ -3,35 +3,43 @@ import { Column } from "primereact/column";
 import { DataTable, DataTableRowEditCompleteEvent } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { InputMask } from "primereact/inputmask";
+import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import Api from "@/lib/api";
 import { useShowToast } from "@/store/toast";
-import { phoneFormat, phoneNormalise } from "@/lib/tools";
 import { useForm } from "@/hooks/useForm";
-import { textEditor } from "@/lib/editors";
+import { Dropdown } from "primereact/dropdown";
+import { numberEditor, optionEditor, textEditor } from "@/lib/editors";
 import { useFindAll } from "@/hooks/query/getAll";
 import { extractModuleEntity } from "@/lib/api/module";
 
-const module = Api.instance.cathedra;
+const module = Api.instance.group;
 type ModuleEntity = extractModuleEntity<typeof module>;
 
-export default function CathedraPage() {
+export default function GroupPage() {
   const toast = useShowToast();
   const { data, isLoading, refetch } = useFindAll(module);
+  const { data: cathedras } = useFindAll(Api.instance.cathedra);
   const [visible, setVisible] = useState(false);
 
   const form = useForm<Omit<ModuleEntity, "id">>({
     name: "",
-    phone: "",
+    cathedra: -1,
+    course: 1,
   });
 
+  const normaliseData = (data: ModuleEntity) => {
+    if (typeof data.cathedra === "object") {
+      data.cathedra = data.cathedra.id;
+    }
+    console.log(data);
+    return data;
+  };
+
   const create = async () => {
-    const { data } = form;
+    const data = normaliseData(form.data as ModuleEntity);
 
-    data.phone = phoneNormalise(data.phone);
-
-    if (data.name && data.phone.length == 12) {
+    if (data.name) {
       await module.create(data);
       await refetch();
       setVisible(false);
@@ -48,22 +56,26 @@ export default function CathedraPage() {
           onClick={() => setVisible(true)}
         />
         <Dialog
-          header="Добавить кафедру"
+          header="Добавить группу"
           visible={visible}
           onHide={() => setVisible(false)}
         >
           <div className="flex flex-column gap-2">
             <label className="flex flex-column gap-2">
               Название
-              <InputText placeholder="Кафедра - " {...form.handle("name")} />
+              <InputText placeholder="Группа - " {...form.handle("name")} />
             </label>
             <label className="flex flex-column gap-2">
-              Номер телефона
-              <InputMask
-                mask="+7 (999) 999-9999"
-                placeholder="+7 (999) 999-9999"
-                {...form.handle("phone")}
+              Кафедра
+              <Dropdown
+                optionLabel="name"
+                {...form.handle("cathedra")}
+                options={cathedras}
               />
+            </label>
+            <label className="flex flex-column gap-2">
+              Курс
+              <InputNumber placeholder="курс - " {...form.handle("course")} />
             </label>
             <Button onClick={create}>Создать</Button>
           </div>
@@ -73,7 +85,7 @@ export default function CathedraPage() {
   };
 
   const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
-    const newData = e.newData as ModuleEntity;
+    const newData = normaliseData(e.newData as ModuleEntity);
     try {
       await module.update(newData.id, newData);
       await refetch();
@@ -100,11 +112,12 @@ export default function CathedraPage() {
       >
         <Column field="id" header="№" style={{ maxWidth: "2em" }} />
         <Column field="name" header="Название" editor={textEditor} />
+        <Column field="course" header="Курс" editor={numberEditor} />
         <Column
-          field="phone"
-          header="Телефон"
-          body={(value) => phoneFormat(value.phone)}
-          editor={textEditor}
+          header="Кафедра"
+          field="cathedra"
+          body={(value: ModuleEntity) => cathedras![+value.cathedra].name}
+          editor={optionEditor(cathedras!)}
         />
         <Column
           rowEditor

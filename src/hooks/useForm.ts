@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 export function useForm<T extends Object>(defaultState: T) {
   const [data, setData] = useState(defaultState);
 
@@ -15,9 +15,9 @@ export function useForm<T extends Object>(defaultState: T) {
     data,
     setValue,
     getValue,
-    handle: (key: keyof typeof data) => {
+    handle: <T>(key: keyof typeof data) => {
       return {
-        value: data[key] as string,
+        value: data[key] as T,
         onChange: (e: any) => setValue(key, e.target.value),
       };
     },

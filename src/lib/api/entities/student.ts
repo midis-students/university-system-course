@@ -1,13 +1,11 @@
 import { Entity } from "../entity";
-import { Cathedra } from "./cathedra";
+import { Group } from "./group";
 
-export class Teacher extends Entity {
+export class Student extends Entity {
   first_name: string;
   last_name: string;
   second_name: string;
   sex: boolean;
   birth_date: string;
-  cathedra: Cathedra | number;
-  degree: string;
-  phone: string;
+  group: Group | number;
 }

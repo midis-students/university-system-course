@@ -4,33 +4,24 @@ import { DataTable, DataTableRowEditCompleteEvent } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { RadioButton } from "primereact/radiobutton";
 import { InputText } from "primereact/inputtext";
-import { InputMask } from "primereact/inputmask";
 import { Calendar } from "primereact/calendar";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import Api from "@/lib/api";
 import { useShowToast } from "@/store/toast";
-import { normaliseDate, phoneFormat, phoneNormalise } from "@/lib/tools";
+import { normaliseDate, phoneFormat } from "@/lib/tools";
 import { useForm } from "@/hooks/useForm";
 import { dateEditor, optionEditor, textEditor } from "@/lib/editors";
 import { extractModuleEntity } from "@/lib/api/module";
 import { useFindAll } from "@/hooks/query/getAll";
 
-const degrees = [
-  "Ассистент",
-  "Преподователь",
-  "Старшие преподователи",
-  "Доценты",
-  "Профессора",
-];
-
-const module = Api.instance.teacher;
+const module = Api.instance.student;
 type ModuleEntity = extractModuleEntity<typeof module>;
 
-export default function CathedraPage() {
+export default function StudentPage() {
   const toast = useShowToast();
   const { data, isLoading, refetch } = useFindAll(module);
-  const { data: cathedras } = useFindAll(Api.instance.cathedra);
+  const { data: groups } = useFindAll(Api.instance.group);
   const [visible, setVisible] = useState(false);
   const form = useForm<Omit<ModuleEntity, "id">>({
     first_name: "",
@@ -38,15 +29,12 @@ export default function CathedraPage() {
     second_name: "",
     sex: false,
     birth_date: "",
-    degree: "",
-    phone: "",
-    cathedra: 0,
+    group: 0,
   });
 
   const normaliseData = (data: ModuleEntity) => {
-    data.phone = phoneNormalise(data.phone);
-    if (typeof data.cathedra === "object") {
-      data.cathedra = data.cathedra.id;
+    if (typeof data.group === "object") {
+      data.group = data.group.id;
     }
     data.birth_date = normaliseDate(new Date(data.birth_date));
 
@@ -55,11 +43,10 @@ export default function CathedraPage() {
 
   const create = async () => {
     const data = normaliseData(form.data as ModuleEntity);
-    if (data.phone.length === 12) {
-      await module.create(data);
-      await refetch();
-      setVisible(false);
-    }
+
+    await module.create(data);
+    await refetch();
+    setVisible(false);
   };
 
   const header = () => {
@@ -72,7 +59,7 @@ export default function CathedraPage() {
           onClick={() => setVisible(true)}
         />
         <Dialog
-          header="Добавить преподователя"
+          header="Добавить студента"
           visible={visible}
           onHide={() => setVisible(false)}
         >
@@ -123,23 +110,11 @@ export default function CathedraPage() {
             </div>
             <div className="flex flex-column gap-2">
               <label className="flex flex-column gap-2">
-                Номер телефона
-                <InputMask
-                  mask="+7 (999) 999-9999"
-                  placeholder="+7 (999) 999-9999"
-                  {...form.handle("phone")}
-                />
-              </label>
-              <label className="flex flex-column gap-2">
-                Ученная степень
-                <Dropdown {...form.handle("degree")} options={degrees} />
-              </label>
-              <label className="flex flex-column gap-2">
-                Кафедра
+                Группа
                 <Dropdown
                   optionLabel="name"
-                  {...form.handle("cathedra")}
-                  options={cathedras}
+                  {...form.handle("group")}
+                  options={groups}
                 />
               </label>
             </div>
@@ -194,25 +169,16 @@ export default function CathedraPage() {
             new Date(value.birth_date).toLocaleDateString()
           }
         />
+
         <Column
-          header="Телефон"
-          field="phone"
-          body={(value) => phoneFormat(value.phone)}
-          editor={textEditor}
-        />
-        <Column
-          header="Кафедра"
-          field="cathedra"
+          header="Группа"
+          field="group"
           body={(value: ModuleEntity) =>
-            cathedras?.find((cathedra) => cathedra.id === value.cathedra)?.name
+            groups?.find((group) => group.id === value.group)?.name
           }
-          editor={optionEditor(cathedras!)}
+          editor={optionEditor(groups!)}
         />
-        <Column
-          header="Ученная степень"
-          field="degree"
-          editor={optionEditor(degrees, "")}
-        />
+
         <Column
           rowEditor
           headerStyle={{ width: "10%", minWidth: "8rem" }}

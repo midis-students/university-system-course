@@ -1,8 +1,11 @@
-import Module from './module';
-import { Cathedra, Teacher } from './entities';
+import Module from "./module";
+import { Cathedra, Teacher } from "./entities";
+import { Group } from "./entities/group";
+import { Student } from "./entities/student";
+import { Discipline } from "./entities/discipline";
 
 type RequestConfig = {
-  method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  method: "GET" | "POST" | "PATCH" | "DELETE";
   body?: Record<string, unknown>;
   query?: Record<string, string>;
 };
@@ -13,12 +16,15 @@ export default class Api {
 
   readonly cathedra = new Module<Cathedra>(this, Cathedra);
   readonly teacher = new Module<Teacher>(this, Teacher);
+  readonly group = new Module<Group>(this, Group);
+  readonly student = new Module<Student>(this, Student);
+  readonly discipline = new Module<Discipline>(this, Discipline);
 
-  private readonly host = 'https://midis-api.damirlut.online/';
+  private readonly host = "/api/";
 
   async request<T>(endpoint: string, config: RequestConfig): Promise<T> {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
 
     const requestInit: RequestInit = {
@@ -29,11 +35,11 @@ export default class Api {
     let url = this.host + endpoint;
 
     if (config.query) {
-      url += '?' + new URLSearchParams(config.query).toString();
+      url += "?" + new URLSearchParams(config.query).toString();
     }
 
-    if (['POST', 'PATCH'].includes(config.method) && config.body) {
-      requestInit['body'] = JSON.stringify(config.body);
+    if (["POST", "PATCH"].includes(config.method) && config.body) {
+      requestInit["body"] = JSON.stringify(config.body);
     }
 
     const response = await fetch(url, requestInit);

@@ -1,4 +1,6 @@
 export abstract class Entity {
-  static path = '';
+  static get path() {
+    return this.name.toLowerCase();
+  }
   id: number;
 }

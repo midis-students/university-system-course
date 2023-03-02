@@ -1,6 +1,8 @@
 import Api from '.';
 import { Entity } from './entity';
 
+export type extractModuleEntity<Type> = Type extends Module<infer X> ? X : never;
+
 export default class Module<Table extends Entity> {
   #path = '';
   constructor(private api: Api, private table: typeof Entity) {

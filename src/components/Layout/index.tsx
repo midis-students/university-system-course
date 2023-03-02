@@ -36,7 +36,6 @@ export default function Header() {
     {
       label: "Студенты",
       icon: "pi pi-fw pi-users",
-      id: "/students",
       items: [
         {
           label: "Группы",
@@ -44,9 +43,27 @@ export default function Header() {
           id: "/students/groups",
           command,
         },
+        {
+          label: "Список",
+          icon: "pi pi-fw pi-users",
+          id: "/students",
+          command,
+        },
       ],
     },
-    { label: "Занятия", icon: "pi pi-fw pi-table", id: "/schedule", command },
+    {
+      label: "Занятия",
+      icon: "pi pi-fw pi-table",
+      items: [
+        {
+          label: "Дисциплины",
+          icon: "pi pi-fw pi-book",
+          id: "/discipline",
+          command,
+        },
+        {},
+      ],
+    },
     { label: "Настройки", icon: "pi pi-fw pi-cog", id: "/settings", command },
   ];
 
