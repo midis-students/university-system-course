@@ -1,11 +1,9 @@
-import React from "react";
 import { Menubar } from "primereact/menubar";
 import { MenuItem, MenuItemCommandEvent } from "primereact/menuitem";
 import { Outlet, useNavigate } from "react-router-dom";
 import ToastWrapper from "./toast";
 
 export default function Header() {
-  const [index, setIndex] = React.useState(0);
   const navigate = useNavigate();
 
   const command = (event: MenuItemCommandEvent) => {
@@ -56,12 +54,47 @@ export default function Header() {
       icon: "pi pi-fw pi-table",
       items: [
         {
-          label: "Дисциплины",
-          icon: "pi pi-fw pi-book",
-          id: "/discipline",
+          label: "Список",
+          icon: "pi pi-fw pi-table",
+          id: "/schedule",
           command,
         },
-        {},
+        {
+          label: "Проведенные занятия",
+          icon: "pi pi-fw pi-table",
+          id: "/schedule/lesson-passed",
+          command,
+        },
+        {
+          label: "Дисциплины",
+          icon: "pi pi-fw pi-book",
+          id: "/schedule/discipline",
+          command,
+        },
+        {
+          label: "Семестры",
+          icon: "pi pi-fw pi-book",
+          id: "/schedule/semester",
+          command,
+        },
+        {
+          label: "Формы контроля",
+          icon: "pi pi-fw pi-book",
+          id: "/schedule/form-of-control",
+          command,
+        },
+        {
+          label: "Сессия",
+          icon: "pi pi-fw pi-book",
+          id: "/schedule/session",
+          command,
+        },
+        {
+          label: "Результаты",
+          icon: "pi pi-fw pi-book",
+          id: "/schedule/session-result",
+          command,
+        },
       ],
     },
     { label: "Настройки", icon: "pi pi-fw pi-cog", id: "/settings", command },

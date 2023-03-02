@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Column } from "primereact/column";
 import { DataTable, DataTableRowEditCompleteEvent } from "primereact/datatable";
 import { Button } from "primereact/button";
@@ -12,38 +12,59 @@ import { Dropdown } from "primereact/dropdown";
 import { numberEditor, optionEditor, textEditor } from "@/lib/editors";
 import { useFindAll } from "@/hooks/query/getAll";
 import { extractModuleEntity } from "@/lib/api/module";
+import { setIdIfObject } from "@/lib/tools";
+import { useFindOne } from "@/hooks/query/findOne";
+import { Discipline, FormOfControl } from "@/lib/api/entities";
 
-const module = Api.instance.group;
+const module = Api.instance.session;
 type ModuleEntity = extractModuleEntity<typeof module>;
 
-export default function GroupPage() {
+export default function SessionPage() {
   const toast = useShowToast();
   const { data, isLoading, refetch } = useFindAll(module);
-  const { data: cathedras } = useFindAll(Api.instance.cathedra);
+  const { data: semester } = useFindAll(Api.instance.semester);
+  const { data: formOfControl } = useFindAll(Api.instance.formOfControl);
   const [visible, setVisible] = useState(false);
+  const [formOfControlNormalise, setFormOfControlNormalise] = useState<
+    FormOfControl[]
+  >([]);
+
+  useEffect(() => {
+    const update = async () => {
+      if (!formOfControl) return;
+
+      const list: typeof formOfControlNormalise = [];
+
+      const promises = formOfControl.map(async (form) => {
+        const discipline = await Api.instance.discipline.get({
+          id: form.discipline,
+        });
+        list.push({ ...form, discipline });
+      });
+
+      await Promise.all(promises);
+
+      setFormOfControlNormalise(list);
+    };
+    update();
+  }, [formOfControl?.length]);
 
   const form = useForm<Omit<ModuleEntity, "id">>({
-    name: "",
-    cathedra: -1,
-    course: 1,
+    semester: -1,
+    form_of_control: -1,
   });
 
   const normaliseData = (data: ModuleEntity) => {
-    if (typeof data.cathedra === "object") {
-      data.cathedra = data.cathedra.id;
-    }
-    console.log(data);
+    setIdIfObject(data, "semester", "form_of_control");
     return data;
   };
 
   const create = async () => {
     const data = normaliseData(form.data as ModuleEntity);
 
-    if (data.name) {
-      await module.create(data);
-      await refetch();
-      setVisible(false);
-    }
+    await module.create(data);
+    await refetch();
+    setVisible(false);
   };
 
   const header = () => {
@@ -56,29 +77,29 @@ export default function GroupPage() {
           onClick={() => setVisible(true)}
         />
         <Dialog
-          header="Добавить группу"
+          header="Добавить форму контроля"
           visible={visible}
           onHide={() => setVisible(false)}
         >
           <div className="flex flex-column gap-2">
             <label className="flex flex-column gap-2">
-              Название
-              <InputText placeholder="Группа - " {...form.handle("name")} />
-            </label>
-            <label className="flex flex-column gap-2">
-              Кафедра
+              Семестр
               <Dropdown
-                optionLabel="name"
-                {...form.handle("cathedra")}
-                options={cathedras}
+                optionLabel="year"
+                options={semester}
+                {...form.handle("semester")}
               />
             </label>
             <label className="flex flex-column gap-2">
-              Курс
-              <InputNumber
-                placeholder="курс - "
-                value={form.getValue("course")}
-                onValueChange={(e) => form.setValue("course", e.value!)}
+              Форма контроля
+              <Dropdown
+                {...form.handle("form_of_control")}
+                options={formOfControlNormalise?.map((form) => ({
+                  value: form.id,
+                  label: `${(form.discipline as Discipline).name} - ${
+                    form.type
+                  }`,
+                }))}
               />
             </label>
             <Button onClick={create}>Создать</Button>
@@ -115,15 +136,25 @@ export default function GroupPage() {
         onRowEditComplete={onRowEditComplete}
       >
         <Column field="id" header="№" style={{ maxWidth: "2em" }} />
-        <Column field="name" header="Название" editor={textEditor} />
-        <Column field="course" header="Курс" editor={numberEditor} />
         <Column
-          header="Кафедра"
-          field="cathedra"
-          body={(value: ModuleEntity) =>
-            cathedras?.find((cathedra) => cathedra.id === value.cathedra)?.name
+          field="formofcontrol"
+          header="Форма контроля"
+          body={(entity: ModuleEntity) => {
+            const form = formOfControlNormalise?.find(
+              (value) => value.id === entity.form_of_control
+            );
+            if (form)
+              return `${(form.discipline as Discipline).name} - ${form.type}`;
+          }}
+          editor={optionEditor(formOfControlNormalise!, "")}
+        />
+        <Column
+          header="Семестр"
+          field="semester"
+          body={(entity: ModuleEntity) =>
+            semester?.find((value) => value.id === entity.semester)?.year
           }
-          editor={optionEditor(cathedras!)}
+          editor={optionEditor(semester!)}
         />
         <Column
           rowEditor

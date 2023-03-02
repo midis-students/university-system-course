@@ -7,7 +7,7 @@ specifiers:
   '@vitejs/plugin-react': ^3.1.0
   primeflex: ^3.3.0
   primeicons: ^6.0.1
-  primereact: ^9.1.1
+  primereact: ^9.2.0
   react: ^18.2.0
   react-dom: ^18.2.0
   react-query: ^3.39.3
@@ -19,7 +19,7 @@ specifiers:
 dependencies:
   primeflex: 3.3.0
   primeicons: 6.0.1
-  primereact: 9.1.1_xjdqqkwt7tvslo3o43ijujwesi
+  primereact: 9.2.0_xjdqqkwt7tvslo3o43ijujwesi
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-query: 3.39.3_biqbaboplfbrettd7655fr4n2y
@@ -891,8 +891,8 @@ packages:
     resolution: {integrity: sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==}
     dev: false
 
-  /primereact/9.1.1_xjdqqkwt7tvslo3o43ijujwesi:
-    resolution: {integrity: sha512-vr6zQBqXT/zBK2p/SuOeMoKAtafYlL1M2jtWMkyqzIUukokZx17txtHEYsOwU/rOfp0t6v8fktTxHYvNxxr01w==}
+  /primereact/9.2.0_xjdqqkwt7tvslo3o43ijujwesi:
+    resolution: {integrity: sha512-Du9GlRi9QelUynTW0nDamG+aj3UmSvbk0pu5zvw1tqp+mH1IntJ3dWKaOnqqPaNPF1dx0N/TmcIjQvXRjUVagw==}
     peerDependencies:
       '@types/react': ^17.0.0 || ^18.0.0
       primeicons: ^5.0.0 || ^6.0.0

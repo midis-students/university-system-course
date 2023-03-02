@@ -1,4 +1,4 @@
-import { useAllCathedras } from "@/hooks/query/cathedra";
+
 import { Calendar } from "primereact/calendar";
 import { ColumnEditorOptions } from "primereact/column";
 import { Dropdown } from "primereact/dropdown";

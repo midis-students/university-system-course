@@ -1,8 +1,12 @@
 import Module from "./module";
-import { Cathedra, Teacher } from "./entities";
+import { Cathedra, FormOfControl, Lesson, Teacher } from "./entities";
 import { Group } from "./entities/group";
 import { Student } from "./entities/student";
 import { Discipline } from "./entities/discipline";
+import { Semester } from "./entities/semestr";
+import { Session } from "./entities/session";
+import { SessionResult } from "./entities/sessionresult";
+import { LessonPassed } from "./entities/lessonpassed";
 
 type RequestConfig = {
   method: "GET" | "POST" | "PATCH" | "DELETE";
@@ -19,6 +23,12 @@ export default class Api {
   readonly group = new Module<Group>(this, Group);
   readonly student = new Module<Student>(this, Student);
   readonly discipline = new Module<Discipline>(this, Discipline);
+  readonly semester = new Module<Semester>(this, Semester);
+  readonly lesson = new Module<Lesson>(this, Lesson);
+  readonly lessonPassed = new Module<LessonPassed>(this, LessonPassed);
+  readonly formOfControl = new Module<FormOfControl>(this, FormOfControl);
+  readonly session = new Module<Session>(this, Session);
+  readonly sessionResult = new Module<SessionResult>(this, SessionResult);
 
   private readonly host = "/api/";
 

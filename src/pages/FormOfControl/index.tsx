@@ -12,38 +12,35 @@ import { Dropdown } from "primereact/dropdown";
 import { numberEditor, optionEditor, textEditor } from "@/lib/editors";
 import { useFindAll } from "@/hooks/query/getAll";
 import { extractModuleEntity } from "@/lib/api/module";
+import { setIdIfObject } from "@/lib/tools";
 
-const module = Api.instance.group;
+const module = Api.instance.formOfControl;
 type ModuleEntity = extractModuleEntity<typeof module>;
 
-export default function GroupPage() {
+const formOfControl = ["Зачет", "Экзамен", "Курсовая"];
+
+export default function FormOfControlPage() {
   const toast = useShowToast();
   const { data, isLoading, refetch } = useFindAll(module);
-  const { data: cathedras } = useFindAll(Api.instance.cathedra);
+  const { data: discipline } = useFindAll(Api.instance.discipline);
   const [visible, setVisible] = useState(false);
 
   const form = useForm<Omit<ModuleEntity, "id">>({
-    name: "",
-    cathedra: -1,
-    course: 1,
+    type: "",
+    discipline: -1,
   });
 
   const normaliseData = (data: ModuleEntity) => {
-    if (typeof data.cathedra === "object") {
-      data.cathedra = data.cathedra.id;
-    }
-    console.log(data);
+    setIdIfObject(data, "discipline");
     return data;
   };
 
   const create = async () => {
     const data = normaliseData(form.data as ModuleEntity);
 
-    if (data.name) {
-      await module.create(data);
-      await refetch();
-      setVisible(false);
-    }
+    await module.create(data);
+    await refetch();
+    setVisible(false);
   };
 
   const header = () => {
@@ -56,29 +53,21 @@ export default function GroupPage() {
           onClick={() => setVisible(true)}
         />
         <Dialog
-          header="Добавить группу"
+          header="Добавить форму контроля"
           visible={visible}
           onHide={() => setVisible(false)}
         >
           <div className="flex flex-column gap-2">
             <label className="flex flex-column gap-2">
-              Название
-              <InputText placeholder="Группа - " {...form.handle("name")} />
+              Вид
+              <Dropdown options={formOfControl} {...form.handle("type")} />
             </label>
             <label className="flex flex-column gap-2">
-              Кафедра
+              Дисциплина
               <Dropdown
                 optionLabel="name"
-                {...form.handle("cathedra")}
-                options={cathedras}
-              />
-            </label>
-            <label className="flex flex-column gap-2">
-              Курс
-              <InputNumber
-                placeholder="курс - "
-                value={form.getValue("course")}
-                onValueChange={(e) => form.setValue("course", e.value!)}
+                {...form.handle("discipline")}
+                options={discipline}
               />
             </label>
             <Button onClick={create}>Создать</Button>
@@ -115,15 +104,18 @@ export default function GroupPage() {
         onRowEditComplete={onRowEditComplete}
       >
         <Column field="id" header="№" style={{ maxWidth: "2em" }} />
-        <Column field="name" header="Название" editor={textEditor} />
-        <Column field="course" header="Курс" editor={numberEditor} />
         <Column
-          header="Кафедра"
-          field="cathedra"
-          body={(value: ModuleEntity) =>
-            cathedras?.find((cathedra) => cathedra.id === value.cathedra)?.name
+          field="type"
+          header="Вид контроля"
+          editor={optionEditor(formOfControl, "")}
+        />
+        <Column
+          header="Дисциплина"
+          field="discipline"
+          body={(entity: ModuleEntity) =>
+            discipline?.find((value) => value.id === entity.discipline)?.name
           }
-          editor={optionEditor(cathedras!)}
+          editor={optionEditor(discipline!)}
         />
         <Column
           rowEditor

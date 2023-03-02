@@ -3,43 +3,29 @@ import { Column } from "primereact/column";
 import { DataTable, DataTableRowEditCompleteEvent } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import Api from "@/lib/api";
+import { Cathedra } from "@/lib/api/entities";
 import { useShowToast } from "@/store/toast";
 import { useForm } from "@/hooks/useForm";
-import { Dropdown } from "primereact/dropdown";
-import { numberEditor, optionEditor, textEditor } from "@/lib/editors";
+import { textEditor } from "@/lib/editors";
 import { useFindAll } from "@/hooks/query/getAll";
 import { extractModuleEntity } from "@/lib/api/module";
 
-const module = Api.instance.group;
+const module = Api.instance.semester;
 type ModuleEntity = extractModuleEntity<typeof module>;
 
-export default function GroupPage() {
+export default function SemesterPage() {
   const toast = useShowToast();
   const { data, isLoading, refetch } = useFindAll(module);
-  const { data: cathedras } = useFindAll(Api.instance.cathedra);
   const [visible, setVisible] = useState(false);
 
   const form = useForm<Omit<ModuleEntity, "id">>({
-    name: "",
-    cathedra: -1,
-    course: 1,
+    year: "",
   });
-
-  const normaliseData = (data: ModuleEntity) => {
-    if (typeof data.cathedra === "object") {
-      data.cathedra = data.cathedra.id;
-    }
-    console.log(data);
-    return data;
-  };
-
   const create = async () => {
-    const data = normaliseData(form.data as ModuleEntity);
-
-    if (data.name) {
+    const { data } = form;
+    if (data.year) {
       await module.create(data);
       await refetch();
       setVisible(false);
@@ -56,30 +42,14 @@ export default function GroupPage() {
           onClick={() => setVisible(true)}
         />
         <Dialog
-          header="Добавить группу"
+          header="Добавить дисциплину"
           visible={visible}
           onHide={() => setVisible(false)}
         >
           <div className="flex flex-column gap-2">
             <label className="flex flex-column gap-2">
-              Название
-              <InputText placeholder="Группа - " {...form.handle("name")} />
-            </label>
-            <label className="flex flex-column gap-2">
-              Кафедра
-              <Dropdown
-                optionLabel="name"
-                {...form.handle("cathedra")}
-                options={cathedras}
-              />
-            </label>
-            <label className="flex flex-column gap-2">
-              Курс
-              <InputNumber
-                placeholder="курс - "
-                value={form.getValue("course")}
-                onValueChange={(e) => form.setValue("course", e.value!)}
-              />
+              Семестр
+              <InputText placeholder="год-год" {...form.handle("year")} />
             </label>
             <Button onClick={create}>Создать</Button>
           </div>
@@ -89,7 +59,7 @@ export default function GroupPage() {
   };
 
   const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
-    const newData = normaliseData(e.newData as ModuleEntity);
+    const newData = e.newData as Cathedra;
     try {
       await module.update(newData.id, newData);
       await refetch();
@@ -115,16 +85,7 @@ export default function GroupPage() {
         onRowEditComplete={onRowEditComplete}
       >
         <Column field="id" header="№" style={{ maxWidth: "2em" }} />
-        <Column field="name" header="Название" editor={textEditor} />
-        <Column field="course" header="Курс" editor={numberEditor} />
-        <Column
-          header="Кафедра"
-          field="cathedra"
-          body={(value: ModuleEntity) =>
-            cathedras?.find((cathedra) => cathedra.id === value.cathedra)?.name
-          }
-          editor={optionEditor(cathedras!)}
-        />
+        <Column field="year" header="Год" editor={textEditor} />
         <Column
           rowEditor
           headerStyle={{ width: "10%", minWidth: "8rem" }}
