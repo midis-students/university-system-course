@@ -8,7 +8,7 @@ export function useFindAll<T extends Entity>(module: Module<T>) {
 
   return useQuery({
     queryFn: () => module.getAll(),
-    queryKey: [module.constructor.name],
+    queryKey: [module["table"].name],
     onError: (error) => {
       if (error instanceof Error) {
         toast({

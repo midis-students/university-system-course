@@ -116,7 +116,9 @@ export default function GroupPage() {
         <Column
           header="Кафедра"
           field="cathedra"
-          body={(value: ModuleEntity) => cathedras![+value.cathedra].name}
+          body={(value: ModuleEntity) =>
+            cathedras?.find((cathedra) => cathedra.id === value.cathedra)?.name
+          }
           editor={optionEditor(cathedras!)}
         />
         <Column
