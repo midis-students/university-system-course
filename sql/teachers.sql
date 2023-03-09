@@ -40,4 +40,98 @@ BEGIN
     SELECT * FROM `Teacher` WHERE `Teacher`.`salary` = `salary`;
 END;
 
-CALL `getTeachersBySalary`(10000);
+DROP PROCEDURE IF EXISTS `getTeachersBySemester`;
+CREATE PROCEDURE `getTeachersBySemester`(IN `semester` INT)
+BEGIN
+    SELECT `Teacher`.*
+    FROM `Lesson`
+             LEFT JOIN `Teacher` ON `Teacher`.`id` = `Lesson`.`teacher`
+    WHERE `Lesson`.`semester` = `semester`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeachersByGroup`;
+CREATE PROCEDURE `getTeachersByGroup`(IN `group` INT)
+BEGIN
+    SELECT `Teacher`.*
+    FROM `Lesson`
+             LEFT JOIN `Teacher` ON `Teacher`.`id` = `Lesson`.`teacher`
+    WHERE `Lesson`.`group` = `group`
+    GROUP BY `Teacher`.`id`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeachersByCourse`;
+CREATE PROCEDURE `getTeachersByCourse`(IN `course` INT)
+BEGIN
+    SELECT `Teacher`.*
+    FROM `Lesson`
+             LEFT JOIN `Teacher` ON `Teacher`.`id` = `Lesson`.`teacher`
+             LEFT JOIN `Group` ON `Group`.`id` = `Lesson`.`group`
+    WHERE `Group`.`course` = `course`
+    GROUP BY `Teacher`.`id`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeachersLoad`;
+CREATE PROCEDURE `getTeachersLoad`()
+BEGIN
+    SELECT `Discipline`.`name` AS 'discipline', `hours`
+    FROM `Lesson`
+             LEFT JOIN `Discipline` ON `Discipline`.`id` = `Lesson`.`discipline`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeachersLoadByType`;
+CREATE PROCEDURE `getTeachersLoadByType`(IN `type` VARCHAR(64))
+BEGIN
+    SELECT `Discipline`.`name` AS 'discipline', `hours`
+    FROM `Lesson`
+             LEFT JOIN `Discipline` ON `Discipline`.`id` = `Lesson`.`discipline`
+    WHERE `Lesson`.`type` = `type`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeachersLoadBySemester`;
+CREATE PROCEDURE `getTeachersLoadBySemester`(IN `semester` INT)
+BEGIN
+    SELECT `Discipline`.`name` AS 'discipline', `hours`
+    FROM `Lesson`
+             LEFT JOIN `Discipline` ON `Discipline`.`id` = `Lesson`.`discipline`
+    WHERE `Lesson`.`semester` = `semester`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeachersLoadByTeacher`;
+CREATE PROCEDURE `getTeachersLoadByTeacher`(IN `teacher` INT)
+BEGIN
+    SELECT `Discipline`.`name` AS 'discipline', `hours`
+    FROM `Lesson`
+             LEFT JOIN `Discipline` ON `Discipline`.`id` = `Lesson`.`discipline`
+    WHERE `Lesson`.`teacher` = `teacher`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeachersLoadByCathedra`;
+CREATE PROCEDURE `getTeachersLoadByCathedra`(IN `cathedra` INT)
+BEGIN
+    SELECT `Discipline`.`name` AS 'discipline', `hours`
+    FROM `Lesson`
+             LEFT JOIN `Discipline` ON `Discipline`.`id` = `Lesson`.`discipline`
+             LEFT JOIN `Teacher` ON `Teacher`.`id` = `Lesson`.`teacher`
+    WHERE `Teacher`.`cathedra` = `cathedra`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeacher`;
+CREATE PROCEDURE `getTeacher`(IN `teacherId` INT)
+BEGIN
+    SELECT `Teacher`.*, `Cathedra`.`name` AS "cathedra"
+    FROM `Teacher`
+             LEFT JOIN `Cathedra` ON `Cathedra`.`id` = `Teacher`.`cathedra`
+    WHERE `Teacher`.`id` = `teacherId`;
+END;
+
+DROP PROCEDURE IF EXISTS `getTeacherDiscipline`;
+CREATE PROCEDURE `getTeacherDiscipline`(IN `teacherId` INT)
+BEGIN
+    SELECT `Lesson`.*, `Discipline`.`name` AS "discipline"
+    FROM `Lesson`
+             LEFT OUTER JOIN `Discipline` ON `Discipline`.`id` = `Lesson`.`discipline`
+    WHERE `Lesson`.`teacher` = `teacherId`;
+END;
+
+
+CALL `getTeacherDiscipline`(4);
