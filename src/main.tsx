@@ -10,6 +10,11 @@ import './global.css';
 import './lib/api';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import * as API from './lib/api';
+
+///@ts-ignore
+window.api = API;
+
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

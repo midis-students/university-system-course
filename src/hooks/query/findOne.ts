@@ -1,19 +1,16 @@
-import { useQuery } from "react-query";
-import { useShowToast } from "@/store/toast";
-import Module from "@/lib/api/module";
-import { Entity } from "@/lib/api/entity";
+import { useQuery, UseQueryOptions } from 'react-query';
+import { useShowToast } from '@/store/toast';
 
-export function useFindOne<T extends Entity>(module: Module<T>, id: number) {
+export function useQueryExt<Data>(options: UseQueryOptions<Data>) {
   const toast = useShowToast();
 
   return useQuery({
-    queryFn: () => module.get({ id }),
-    queryKey: [module["table"].name],
+    ...options,
     onError: (error) => {
       if (error instanceof Error) {
         toast({
-          severity: "error",
-          summary: "Error",
+          severity: 'error',
+          summary: 'Error',
           detail: error.message,
         });
       }

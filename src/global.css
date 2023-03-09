@@ -2,6 +2,7 @@ body {
   padding: 0;
   margin: 0;
   font-family: Poppins, sans-serif;
+  overflow: hidden;
 }
 
 .header {
@@ -19,4 +20,8 @@ body {
 
 main {
   margin: 1rem;
+}
+
+.h-screen {
+  height: calc(100vh - 50px) !important;
 }
