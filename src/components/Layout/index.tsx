@@ -22,14 +22,27 @@ export default function Header() {
     {
       label: 'Кафедра',
       icon: 'pi pi-fw pi-sitemap',
-      id: '/cathedra',
+      id: '/cathedras',
       command,
     },
     {
       label: 'Преподаватели',
       icon: 'pi pi-fw pi-user',
       id: '/teachers',
-      command,
+      items: [
+        {
+          label: 'Список',
+          icon: 'pi pi-fw pi-user',
+          id: '/teachers',
+          command,
+        },
+        {
+          label: 'Добавить',
+          icon: 'pi pi-fw pi-user',
+          id: '/teachers/add',
+          command,
+        },
+      ],
     },
     {
       label: 'Студенты',

@@ -1,49 +1,64 @@
-import { useQueryExt } from '@/hooks/query/findOne';
-import { getGroups } from '@/lib/api';
-import { Card } from 'primereact/card';
+import { useQueryExt } from '@/hooks/query/QueryExt';
+import { getGroups, getGroupsCount } from '@/lib/api';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
-import { Group } from '@/lib/api/types';
+import { Count, Group } from '@/lib/api/types';
+import { Panel } from 'primereact/panel';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
 
-export default function GroupList() {
-  const navigate = useNavigate();
-  const { data, isLoading, isSuccess } = useQueryExt<Group[]>({
-    queryFn: () => getGroups(100, 0),
-    queryKey: ['group'],
+export default function GroupListPage() {
+  const { data, isSuccess } = useQueryExt<Count[]>({
+    queryFn: () => getGroupsCount(1, 0),
+    queryKey: ['group', 'count'],
   });
 
-  const GroupCard = ({ group }: { group: Group }) => {
-    return (
-      <Card
-        title={group.name}
-        subTitle={group.cathedra}
-        className="col-2"
-        footer={
-          <div className="flex justify-content-end gap-2">
-            <Button
-              label="Список"
-              text
-              size="small"
-              onClick={() => navigate('/groups/' + group.id)}
-            />
-          </div>
-        }
-      >
-        <p className="m-0">
-          <div>
-            Курс: <span>{group.name.split('-')[1][0]}</span>
-          </div>
-          <div>
-            Студентов: <span>{group.student_count}</span>
-          </div>
-        </p>
-      </Card>
-    );
-  };
+  const count = isSuccess ? data[0].count : -1;
 
   return (
-    <div className="grid gap-4 m-auto justify-content-center">
-      {isSuccess && data.map((group) => <GroupCard key={group.id} group={group} />)}
+    <div className="card">
+      <h1>Список всех групп</h1>
+      <Panel header={'Количество: ' + count} className="mt-4">
+        <GroupList count={count} />
+      </Panel>
     </div>
+  );
+}
+
+function GroupList({ count }: { count: number }) {
+  const navigate = useNavigate();
+  const { data, isLoading } = useQueryExt<Group[]>({
+    queryFn: () => getGroups(count, 0),
+    queryKey: ['group', 'list'],
+  });
+
+  return (
+    <DataTable
+      value={data}
+      loading={isLoading}
+      showGridlines
+      stripedRows
+      size="small"
+      paginator
+      rows={10}
+    >
+      <Column field="name" header="Название" />
+      <Column field="course" header="Курс" />
+      <Column field="cathedra" header="Кафедра" />
+      <Column field="student_count" header="Кол-во студентов" />
+      <Column
+        headerStyle={{ width: '10%' }}
+        body={(value) => (
+          <Button
+            icon="pi pi-fw pi-external-link"
+            label="Открыть"
+            size="small"
+            text
+            style={{ width: '100%' }}
+            onClick={() => navigate('/groups/' + value.id)}
+          />
+        )}
+      />
+    </DataTable>
   );
 }

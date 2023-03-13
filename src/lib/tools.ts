@@ -1,5 +1,3 @@
-import { Entity } from './api/types';
-
 export function phoneNormalise(phone: string) {
   return phone.replace(/\s|-|\(|\)/gm, '');
 }
@@ -22,13 +20,4 @@ export function normaliseDate(date: Date) {
   const day = (date.getMonth() + 1).toString().padStart(2, '0');
 
   return `${year}-${month}-${day}`;
-}
-
-export function setIdIfObject<T extends Entity>(data: T, ...keys: Array<keyof T>) {
-  for (const key of keys) {
-    if (typeof data[key] === 'object') {
-      /// @ts-ignore
-      data[key] = data[key].id;
-    }
-  }
 }
