@@ -150,4 +150,5 @@ BEGIN
                                              `_phone`,
                                              `_degree`, `_salary`,
                                              `_cathedra`);
+    SELECT LAST_INSERT_ID() as `id`;
 END;

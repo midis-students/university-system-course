@@ -230,4 +230,13 @@ BEGIN
     WHERE `student` = `studentId`;
 END;
 
-CALL `getSessionByStudent`(1);
+
+DROP PROCEDURE IF EXISTS `addStudent`;
+CREATE PROCEDURE `addStudent`(IN `_first_name` VARCHAR(64), IN `_last_name` VARCHAR(64), IN `_second_name` VARCHAR(64),
+                              IN `_sex` TINYINT(1), IN `_birth_date` DATE,  IN `_group` INT)
+BEGIN
+    INSERT INTO `Student`(`first_name`, `last_name`, `second_name`, `sex`, `birth_date`,
+                          `group`) VALUE (`_first_name`, `_last_name`, `_second_name`, `_sex`, `_birth_date`,
+                                             `_group`);
+    SELECT LAST_INSERT_ID() as `id`;
+END;
