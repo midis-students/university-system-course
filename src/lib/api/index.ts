@@ -1,10 +1,10 @@
-const baseUrl = 'http://localhost:5050/';
+const baseUrl = "/api/";
 export function request(method: string, ...args: any[]): Promise<any[]> {
   return fetch(baseUrl + method, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(args),
   }).then((res) => res.json());
 }
@@ -13,156 +13,231 @@ export function request(method: string, ...args: any[]): Promise<any[]> {
 
 /// helper.sql
 export function getGroupsCount(limit: number, skip: number) {
-  return request('getGroupsCount', [limit, skip]);
+  return request("getGroupsCount", [limit, skip]);
 }
 export function getGroups(limit: number, skip: number) {
-  return request('getGroups', [limit, skip]);
+  return request("getGroups", [limit, skip]);
 }
 export function getGroup(groupId: number, limit: number, skip: number) {
-  return request('getGroup', [groupId, limit, skip]);
+  return request("getGroup", [groupId, limit, skip]);
 }
-export function getGroupByCathedra(cathedraId: number, limit: number, skip: number) {
-  return request('getGroupByCathedra', [cathedraId, limit, skip]);
+export function getGroupByCathedra(
+  cathedraId: number,
+  limit: number,
+  skip: number
+) {
+  return request("getGroupByCathedra", [cathedraId, limit, skip]);
 }
-export function getGroupByTeacher(teacherId: number, limit: number, skip: number) {
-  return request('getGroupByTeacher', [teacherId, limit, skip]);
+export function getGroupByTeacher(
+  teacherId: number,
+  limit: number,
+  skip: number
+) {
+  return request("getGroupByTeacher", [teacherId, limit, skip]);
 }
 export function getCathedras(limit: number, skip: number) {
-  return request('getCathedras', [limit, skip]);
+  return request("getCathedras", [limit, skip]);
 }
-export function getCathedraById(cathedraId: number, limit: number, skip: number) {
-  return request('getCathedraById', [cathedraId, limit, skip]);
+export function getCathedraById(
+  cathedraId: number,
+  limit: number,
+  skip: number
+) {
+  return request("getCathedraById", [cathedraId, limit, skip]);
 }
 export function getLessonsByGroup(groupId: number) {
-  return request('getLessonsByGroup', [groupId]);
+  return request("getLessonsByGroup", [groupId]);
 }
 /// students.sql
 export function getStudents(limit: number, skip: number) {
-  return request('getStudents', [limit, skip]);
+  return request("getStudents", [limit, skip]);
 }
 export function getStudentsCount() {
-  return request('getStudentsCount', []);
+  return request("getStudentsCount", []);
 }
 export function getStudent(studentId: number) {
-  return request('getStudent', [studentId]);
+  return request("getStudent", [studentId]);
 }
 export function getStudentsByGroup(group: number, limit: number, skip: number) {
-  return request('getStudentsByGroup', [group, limit, skip]);
+  return request("getStudentsByGroup", [group, limit, skip]);
 }
 export function getStudentsByGroupCount(group: number) {
-  return request('getStudentsByGroupCount', [group]);
+  return request("getStudentsByGroupCount", [group]);
 }
-export function getStudentsByCathedra(cathedra: number, limit: number, skip: number) {
-  return request('getStudentsByCathedra', [cathedra, limit, skip]);
+export function getStudentsByCathedra(
+  cathedra: number,
+  limit: number,
+  skip: number
+) {
+  return request("getStudentsByCathedra", [cathedra, limit, skip]);
 }
 export function getStudentsByCathedraCount(cathedra: number) {
-  return request('getStudentsByCathedraCount', [cathedra]);
+  return request("getStudentsByCathedraCount", [cathedra]);
 }
 export function getStudentsBySex(sex: boolean, limit: number, skip: number) {
-  return request('getStudentsBySex', [sex, limit, skip]);
+  return request("getStudentsBySex", [sex, limit, skip]);
 }
 export function getStudentsBySexCount(sex: boolean) {
-  return request('getStudentsBySexCount', [sex]);
+  return request("getStudentsBySexCount", [sex]);
 }
-export function getStudentsByBirthYear(year: number, limit: number, skip: number) {
-  return request('getStudentsByBirthYear', [year, limit, skip]);
+export function getStudentsByBirthYear(
+  year: number,
+  limit: number,
+  skip: number
+) {
+  return request("getStudentsByBirthYear", [year, limit, skip]);
 }
 export function getStudentsByBirthYearCount(year: number) {
-  return request('getStudentsByBirthYearCount', [year]);
+  return request("getStudentsByBirthYearCount", [year]);
 }
 export function getStudentsByAge(age: number, limit: number, skip: number) {
-  return request('getStudentsByAge', [age, limit, skip]);
+  return request("getStudentsByAge", [age, limit, skip]);
 }
 export function getStudentsByAgeCount(age: number) {
-  return request('getStudentsByAgeCount', [age]);
+  return request("getStudentsByAgeCount", [age]);
 }
 export function getStudentsBySessionResult(
   discipline: number,
   mark: number,
   limit: number,
-  skip: number,
+  skip: number
 ) {
-  return request('getStudentsBySessionResult', [discipline, mark, limit, skip]);
+  return request("getStudentsBySessionResult", [discipline, mark, limit, skip]);
 }
-export function getStudentsBySessionResultCount(discipline: number, mark: number) {
-  return request('getStudentsBySessionResultCount', [discipline, mark]);
+export function getStudentsBySessionResultCount(
+  discipline: number,
+  mark: number
+) {
+  return request("getStudentsBySessionResultCount", [discipline, mark]);
 }
-export function getStudentsBySessionResultWithout(mark: number, limit: number, skip: number) {
-  return request('getStudentsBySessionResultWithout', [mark, limit, skip]);
+export function getStudentsBySessionResultWithout(
+  mark: number,
+  limit: number,
+  skip: number
+) {
+  return request("getStudentsBySessionResultWithout", [mark, limit, skip]);
 }
 export function getStudentsBySessionResultWithoutCount(mark: number) {
-  return request('getStudentsBySessionResultWithoutCount', [mark]);
+  return request("getStudentsBySessionResultWithoutCount", [mark]);
 }
 export function getStudentsPromiser(limit: number, skip: number) {
-  return request('getStudentsPromiser', [limit, skip]);
+  return request("getStudentsPromiser", [limit, skip]);
 }
 export function getStudentsPromiserCount() {
-  return request('getStudentsPromiserCount', []);
+  return request("getStudentsPromiserCount", []);
 }
-export function getStudentsPromiserByGroup(group: number, limit: number, skip: number) {
-  return request('getStudentsPromiserByGroup', [group, limit, skip]);
+export function getStudentsPromiserByGroup(
+  group: number,
+  limit: number,
+  skip: number
+) {
+  return request("getStudentsPromiserByGroup", [group, limit, skip]);
 }
 export function getStudentsPromiserByGroupCount(group: number) {
-  return request('getStudentsPromiserByGroupCount', [group]);
+  return request("getStudentsPromiserByGroupCount", [group]);
 }
-export function getStudentsPromiserByCathedra(cathedra: number, limit: number, skip: number) {
-  return request('getStudentsPromiserByCathedra', [cathedra, limit, skip]);
+export function getStudentsPromiserByCathedra(
+  cathedra: number,
+  limit: number,
+  skip: number
+) {
+  return request("getStudentsPromiserByCathedra", [cathedra, limit, skip]);
 }
 export function getStudentsPromiserByCathedraCount(cathedra: number) {
-  return request('getStudentsPromiserByCathedraCount', [cathedra]);
+  return request("getStudentsPromiserByCathedraCount", [cathedra]);
 }
 export function getSessionByStudent(studentId: number) {
-  return request('getSessionByStudent', [studentId]);
+  return request("getSessionByStudent", [studentId]);
 }
 /// teachers.sql
 export function getTeachersCount() {
-  return request('getTeachersCount', []);
+  return request("getTeachersCount", []);
 }
 export function getTeachers(limit: number, skip: number) {
-  return request('getTeachers', [limit, skip]);
+  return request("getTeachers", [limit, skip]);
 }
-export function getTeachersByCathedra(cathedra: number, limit: number, skip: number) {
-  return request('getTeachersByCathedra', [cathedra, limit, skip]);
+export function getTeachersByCathedra(
+  cathedra: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersByCathedra", [cathedra, limit, skip]);
 }
 export function getTeachersBySex(sex: boolean, limit: number, skip: number) {
-  return request('getTeachersBySex', [sex, limit, skip]);
+  return request("getTeachersBySex", [sex, limit, skip]);
 }
-export function getTeachersByDegree(degree: string, limit: number, skip: number) {
-  return request('getTeachersByDegree', [degree, limit, skip]);
+export function getTeachersByDegree(
+  degree: string,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersByDegree", [degree, limit, skip]);
 }
-export function getTeachersByBirthYear(year: number, limit: number, skip: number) {
-  return request('getTeachersByBirthYear', [year, limit, skip]);
+export function getTeachersByBirthYear(
+  year: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersByBirthYear", [year, limit, skip]);
 }
 export function getTeachersByAge(age: number, limit: number, skip: number) {
-  return request('getTeachersByAge', [age, limit, skip]);
+  return request("getTeachersByAge", [age, limit, skip]);
 }
-export function getTeachersBySalary(salary: number, limit: number, skip: number) {
-  return request('getTeachersBySalary', [salary, limit, skip]);
+export function getTeachersBySalary(
+  salary: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersBySalary", [salary, limit, skip]);
 }
-export function getTeachersBySemester(semester: number, limit: number, skip: number) {
-  return request('getTeachersBySemester', [semester, limit, skip]);
+export function getTeachersBySemester(
+  semester: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersBySemester", [semester, limit, skip]);
 }
 export function getTeachersByGroup(group: number, limit: number, skip: number) {
-  return request('getTeachersByGroup', [group, limit, skip]);
+  return request("getTeachersByGroup", [group, limit, skip]);
 }
-export function getTeachersByCourse(course: number, limit: number, skip: number) {
-  return request('getTeachersByCourse', [course, limit, skip]);
+export function getTeachersByCourse(
+  course: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersByCourse", [course, limit, skip]);
 }
 export function getTeachersLoad(limit: number, skip: number) {
-  return request('getTeachersLoad', [limit, skip]);
+  return request("getTeachersLoad", [limit, skip]);
 }
-export function getTeachersLoadByType(type: string, limit: number, skip: number) {
-  return request('getTeachersLoadByType', [type, limit, skip]);
+export function getTeachersLoadByType(
+  type: string,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersLoadByType", [type, limit, skip]);
 }
-export function getTeachersLoadBySemester(semester: number, limit: number, skip: number) {
-  return request('getTeachersLoadBySemester', [semester, limit, skip]);
+export function getTeachersLoadBySemester(
+  semester: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersLoadBySemester", [semester, limit, skip]);
 }
-export function getTeachersLoadByTeacher(teacher: number, limit: number, skip: number) {
-  return request('getTeachersLoadByTeacher', [teacher, limit, skip]);
+export function getTeachersLoadByTeacher(
+  teacher: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersLoadByTeacher", [teacher, limit, skip]);
 }
-export function getTeachersLoadByCathedra(cathedra: number, limit: number, skip: number) {
-  return request('getTeachersLoadByCathedra', [cathedra, limit, skip]);
+export function getTeachersLoadByCathedra(
+  cathedra: number,
+  limit: number,
+  skip: number
+) {
+  return request("getTeachersLoadByCathedra", [cathedra, limit, skip]);
 }
 export function getTeacher(teacherId: number, limit: number, skip: number) {
-  return request('getTeacher', [teacherId, limit, skip]);
+  return request("getTeacher", [teacherId, limit, skip]);
 }

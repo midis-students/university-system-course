@@ -1,69 +1,69 @@
 import { useForm } from "@/hooks/useForm";
-import { getCathedras, request } from "@/lib/api";
+import { getCathedras, getGroups, request } from "@/lib/api";
 import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
-import { InputMask } from "primereact/inputmask";
 import { RadioButton } from "primereact/radiobutton";
 import { useEffect, useState } from "react";
 import { Button } from "primereact/button";
-import { normaliseDate, phoneNormalise } from "@/lib/tools";
+import { normaliseDate } from "@/lib/tools";
 import { useNavigate } from "react-router-dom";
 
-const degrees = [
-  "Ассистент",
-  "Преподователь",
-  "Старшие преподователи",
-  "Доценты",
-  "Профессора",
-];
-
-export default function TeacherAddPage() {
+export default function StudentAddPage() {
   const navigate = useNavigate();
   const [cathedraList, setCathedraList] = useState<any[]>([]);
+  const [groupList, setGroupList] = useState<any[]>([]);
+  const [course, setCourse] = useState(1);
+  const [cathedra, setCathedra] = useState(-1);
 
   const form = useForm({
     first_name: "",
     last_name: "",
     second_name: "",
     birth_date: new Date(),
-    cathedra: -1,
-    degree: "",
+    group: 0,
     sex: false,
-    phone: "",
-    salary: 0,
   });
 
   useEffect(() => {
-    getCathedras(100, 0).then((data) => {
+    getCathedras(100, 0).then((data) =>
       setCathedraList(
         data.map((cathedra) => ({ label: cathedra.name, value: cathedra.id }))
+      )
+    );
+  }, []);
+
+  useEffect(() => {
+    getGroups(100, 0).then((data) => {
+      setGroupList(
+        data
+          .filter(
+            (value) => value.course == course && value.cathedra_id == cathedra
+          )
+          .map((data) => ({ label: data.name, value: data.id }))
       );
     });
-  }, []);
+  }, [course, cathedra]);
 
   const add = async () => {
     const { data } = form;
     const [last] = await request(
-      "addTeacher",
+      "addStudent",
       data.first_name,
       data.last_name,
       data.second_name,
       data.sex,
       normaliseDate(data.birth_date),
-      phoneNormalise(data.phone),
-      data.degree,
-      Number(data.salary),
-      data.cathedra
+      data.group
     );
     if ("id" in last) {
-      navigate("/teachers/" + last.id);
+      navigate("/students/" + last.id);
     }
   };
 
   return (
-    <Card title="Добавить преподавателя">
+    <Card title="Добавить студента">
       <form action="#" className="flex gap-8">
         <div className="w-2 flex flex-column gap-3">
           <label className="flex flex-column gap-2">
@@ -109,19 +109,22 @@ export default function TeacherAddPage() {
         <div className="w-2 flex flex-column gap-3">
           <label className="flex flex-column gap-2">
             Кафедра
-            <Dropdown {...form.handle("cathedra")} options={cathedraList} />
+            <Dropdown
+              value={cathedra}
+              onChange={(e) => setCathedra(Number(e.target.value))}
+              options={cathedraList}
+            />
           </label>
           <label className="flex flex-column gap-2">
-            Должность
-            <Dropdown {...form.handle("degree")} options={degrees} />
+            Курс
+            <InputText
+              value={course.toString()}
+              onChange={(e) => setCourse(Number(e.target.value))}
+            />
           </label>
           <label className="flex flex-column gap-2">
-            Номер телефона
-            <InputMask {...form.handle("phone")} mask="+7 (999) 999-9999" />
-          </label>
-          <label className="flex flex-column gap-2">
-            Зарплата
-            <InputText {...form.handle("salary")} />
+            Группа
+            <Dropdown {...form.handle("group")} options={groupList} />
           </label>
         </div>
       </form>

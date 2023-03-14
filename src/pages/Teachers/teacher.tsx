@@ -1,26 +1,32 @@
-import { Card } from 'primereact/card';
-import { useQueryExt } from '@/hooks/query/QueryExt';
-import { getGroupByTeacher, getTeacher, getTeachersLoadByTeacher } from '@/lib/api';
-import { Teacher } from '@/lib/api/types';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { phoneFormat } from '@/lib/tools';
-import BlockInfo from '@/components/BlockInfo';
-import { TabView, TabPanel } from 'primereact/tabview';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Button } from 'primereact/button';
+import { Card } from "primereact/card";
+import { useQueryExt } from "@/hooks/query/QueryExt";
+import {
+  getGroupByTeacher,
+  getTeacher,
+  getTeachersLoadByTeacher,
+} from "@/lib/api";
+import { Teacher } from "@/lib/api/types";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { phoneFormat } from "@/lib/tools";
+import BlockInfo from "@/components/BlockInfo";
+import { TabView, TabPanel } from "primereact/tabview";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
 
 export default function TeacherPage() {
   const { teacherId } = useParams();
   const { data, isLoading, isSuccess } = useQueryExt<Teacher[]>({
     queryFn: () => getTeacher(Number(teacherId), 1, 0),
-    queryKey: ['teacher', teacherId],
+    queryKey: ["teacher", teacherId],
   });
 
   if (isLoading) return <>Loading...</>;
   if (!isSuccess) return <>Oops error</>;
 
   const [teacher] = data;
+
+  if (!teacher) return <Navigate to="/teachers" />;
 
   return (
     <Card
@@ -29,12 +35,19 @@ export default function TeacherPage() {
     >
       <p className="m-0">
         <BlockInfo title="Кафедра">
-          <Link to={`/cathedras/${teacher.cathedra_id}`}>{teacher.cathedra}</Link>
+          <Link to={`/cathedras/${teacher.cathedra_id}`}>
+            {teacher.cathedra}
+          </Link>
         </BlockInfo>
-        <BlockInfo title="Пол">{teacher.sex ? 'Женский' : 'Мужской'}</BlockInfo>
-        <BlockInfo title="Номер телефона">{phoneFormat(teacher.phone)}</BlockInfo>
+        <BlockInfo title="Пол">{teacher.sex ? "Женский" : "Мужской"}</BlockInfo>
+        <BlockInfo title="Номер телефона">
+          {phoneFormat(teacher.phone)}
+        </BlockInfo>
         <BlockInfo title="Зарплата">
-          {teacher.salary.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' })}
+          {teacher.salary.toLocaleString("ru-RU", {
+            style: "currency",
+            currency: "RUB",
+          })}
         </BlockInfo>
         <BlockInfo title="День рождения">
           {new Date(teacher.birth_date).toLocaleDateString()}
@@ -57,7 +70,7 @@ export default function TeacherPage() {
 function TeacherDiscipline({ teacherId }: { teacherId: number }) {
   const { data, isLoading } = useQueryExt({
     queryFn: () => getTeachersLoadByTeacher(teacherId, 100, 0),
-    queryKey: ['teacher', 'discipline'],
+    queryKey: ["teacher", "discipline"],
   });
 
   return (
@@ -80,7 +93,7 @@ function TeacherGroups({ teacherId }: { teacherId: number }) {
   const navigate = useNavigate();
   const { data, isLoading } = useQueryExt({
     queryFn: () => getGroupByTeacher(teacherId, 100, 0),
-    queryKey: ['teacher', 'groups'],
+    queryKey: ["teacher", "groups"],
   });
 
   return (
@@ -96,15 +109,15 @@ function TeacherGroups({ teacherId }: { teacherId: number }) {
       <Column field="name" header="Группа" />
       <Column field="course" header="Курс" />
       <Column
-        headerStyle={{ width: '10%' }}
+        headerStyle={{ width: "10%" }}
         body={(value) => (
           <Button
             icon="pi pi-fw pi-external-link"
             label="Открыть"
             size="small"
             text
-            style={{ width: '100%', height: '40%' }}
-            onClick={() => navigate('/groups/' + value.id)}
+            style={{ width: "100%", height: "40%" }}
+            onClick={() => navigate("/groups/" + value.id)}
           />
         )}
       />
