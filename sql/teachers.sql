@@ -16,10 +16,10 @@ BEGIN
     SELECT * FROM `Teacher` WHERE `Teacher`.`cathedra` = `cathedra` LIMIT `skip`,`limit`;
 END;
 
-DROP PROCEDURE IF EXISTS `getTeachersBySex`;
-CREATE PROCEDURE `getTeachersBySex`(IN `sex` TINYINT(1), IN `limit` INT, IN `skip` INT)
+DROP PROCEDURE IF EXISTS `getTeachersByGender`;
+CREATE PROCEDURE `getTeachersByGender`(IN `gender` TINYINT(1), IN `limit` INT, IN `skip` INT)
 BEGIN
-    SELECT * FROM `Teacher` WHERE `Teacher`.`sex` = `sex` LIMIT `skip`,`limit`;
+    SELECT * FROM `Teacher` WHERE `Teacher`.`gender` = `gender` LIMIT `skip`,`limit`;
 END;
 
 DROP PROCEDURE IF EXISTS `getTeachersByDegree`;
@@ -141,14 +141,15 @@ END;
 
 DROP PROCEDURE IF EXISTS `addTeacher`;
 CREATE PROCEDURE `addTeacher`(IN `_first_name` VARCHAR(64), IN `_last_name` VARCHAR(64), IN `_second_name` VARCHAR(64),
-                              IN `_sex` TINYINT(1), IN `_birth_date` DATE, IN `_phone` VARCHAR(12), IN `_degree` VARCHAR(64),
+                              IN `_gender` TINYINT(1), IN `_birth_date` DATE, IN `_phone` VARCHAR(12),
+                              IN `_degree` VARCHAR(64),
                               IN `_salary` INT,
                               IN `_cathedra` INT)
 BEGIN
-    INSERT INTO `Teacher`(`first_name`, `last_name`, `second_name`, `sex`, `birth_date`, `phone`, `degree`, `salary`,
-                          `cathedra`) VALUE (`_first_name`, `_last_name`, `_second_name`, `_sex`, `_birth_date`,
+    INSERT INTO `Teacher`(`first_name`, `last_name`, `second_name`, `gender`, `birth_date`, `phone`, `degree`, `salary`,
+                          `cathedra`) VALUE (`_first_name`, `_last_name`, `_second_name`, `_gender`, `_birth_date`,
                                              `_phone`,
                                              `_degree`, `_salary`,
                                              `_cathedra`);
-    SELECT LAST_INSERT_ID() as `id`;
+    SELECT LAST_INSERT_ID() AS `id`;
 END;

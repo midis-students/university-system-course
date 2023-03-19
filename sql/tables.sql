@@ -8,8 +8,11 @@ CREATE TABLE `Cathedra`
 
 CREATE TABLE `Discipline`
 (
-    `id`   INT PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(128) NOT NULL
+    `id`       INT PRIMARY KEY AUTO_INCREMENT,
+    `name`     VARCHAR(128) NOT NULL,
+    `cathedra` INT          NOT NULL,
+
+    FOREIGN KEY (`cathedra`) REFERENCES `Cathedra` (`id`)
 );
 
 CREATE TABLE `FormOfControl`
@@ -43,7 +46,7 @@ CREATE TABLE `Teacher`
     `first_name`  VARCHAR(64) NOT NULL,
     `last_name`   VARCHAR(64) NOT NULL,
     `second_name` VARCHAR(64) NOT NULL,
-    `sex`         TINYINT(1)  NOT NULL,
+    `gender`         TINYINT(1)  NOT NULL,
     `birth_date`  DATE        NOT NULL,
     `phone`       VARCHAR(12) NOT NULL,
     `degree`      VARCHAR(64) NOT NULL,
@@ -59,7 +62,7 @@ CREATE TABLE `Student`
     `first_name`  VARCHAR(64) NOT NULL,
     `last_name`   VARCHAR(64) NOT NULL,
     `second_name` VARCHAR(64) NOT NULL,
-    `sex`         TINYINT(1)  NOT NULL,
+    `gender`         TINYINT(1)  NOT NULL,
     `birth_date`  DATE        NOT NULL,
     `group`       INT         NOT NULL,
 

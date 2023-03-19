@@ -58,20 +58,20 @@ BEGIN
     WHERE `Group`.`cathedra` = `cathedra`;
 END;
 
-DROP PROCEDURE IF EXISTS `getStudentsBySex`;
-CREATE PROCEDURE `getStudentsBySex`(IN `sex` TINYINT(1), IN `limit` INT, IN `skip` INT)
+DROP PROCEDURE IF EXISTS `getStudentsByGender`;
+CREATE PROCEDURE `getStudentsByGender`(IN `gender` TINYINT(1), IN `limit` INT, IN `skip` INT)
 BEGIN
     SELECT *
     FROM `Student`
-    WHERE `Student`.`sex` = `sex`
+    WHERE `Student`.`gender` = `gender`
     LIMIT `skip`,`limit`;
 END;
-DROP PROCEDURE IF EXISTS `getStudentsBySexCount`;
-CREATE PROCEDURE `getStudentsBySexCount`(IN `sex` TINYINT(1))
+DROP PROCEDURE IF EXISTS `getStudentsByGenderCount`;
+CREATE PROCEDURE `getStudentsByGenderCount`(IN `gender` TINYINT(1))
 BEGIN
     SELECT COUNT(*) AS `count`
     FROM `Student`
-    WHERE `Student`.`sex` = `sex`;
+    WHERE `Student`.`gender` = `gender`;
 END;
 
 DROP PROCEDURE IF EXISTS `getStudentsByBirthYear`;
@@ -230,13 +230,32 @@ BEGIN
     WHERE `student` = `studentId`;
 END;
 
+DROP PROCEDURE IF EXISTS `getSessionByGroup`;
+CREATE PROCEDURE `getSessionByGroup`(IN `groupId` INT)
+BEGIN
+    SELECT `SessionResult`.`mark`,
+           `Session`.`semester`,
+           `FormOfControl`.`type`,
+           `Discipline`.`name` as `discipline`,
+           CONCAT(`Student`.`last_name`, ' ', `Student`.`first_name`, ' ', `Student`.`second_name`) AS `student`,
+           `Student`.`id`                                                                           AS `student_id`
+    FROM `SessionResult`
+             JOIN `Session` ON `Session`.`id` = `SessionResult`.`session`
+             JOIN `FormOfControl` ON `Session`.`form_of_control` = `FormOfControl`.`id`
+             JOIN `Discipline` ON `FormOfControl`.`discipline` = `Discipline`.`id`
+             JOIN `Student` ON `Student`.`id` = `SessionResult`.`student`
+             JOIN `Group` ON `Group`.`id` = `Student`.`group`
+    WHERE `Group`.`id` = `groupId`;
+END;
+
+CALL `getSessionByGroup`(2);
 
 DROP PROCEDURE IF EXISTS `addStudent`;
 CREATE PROCEDURE `addStudent`(IN `_first_name` VARCHAR(64), IN `_last_name` VARCHAR(64), IN `_second_name` VARCHAR(64),
-                              IN `_sex` TINYINT(1), IN `_birth_date` DATE,  IN `_group` INT)
+                              IN `_gender` TINYINT(1), IN `_birth_date` DATE, IN `_group` INT)
 BEGIN
-    INSERT INTO `Student`(`first_name`, `last_name`, `second_name`, `sex`, `birth_date`,
-                          `group`) VALUE (`_first_name`, `_last_name`, `_second_name`, `_sex`, `_birth_date`,
-                                             `_group`);
-    SELECT LAST_INSERT_ID() as `id`;
+    INSERT INTO `Student`(`first_name`, `last_name`, `second_name`, `gender`, `birth_date`,
+                          `group`) VALUE (`_first_name`, `_last_name`, `_second_name`, `_gender`, `_birth_date`,
+                                          `_group`);
+    SELECT LAST_INSERT_ID() AS `id`;
 END;

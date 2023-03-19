@@ -11,6 +11,7 @@ specifiers:
   fluent-json-schema: ^4.1.0
   mysql2: ^3.1.2
   pino-pretty: ^9.3.0
+  prettier: ^2.8.4
   ts-node: ^10.9.1
   tsconfig-paths: ^4.1.2
   tsup: ^6.6.3
@@ -29,6 +30,7 @@ dependencies:
 
 devDependencies:
   '@types/node': 18.14.0
+  prettier: 2.8.4
   ts-node: 10.9.1_tncu2ai53lzgmizdedur7lbibe
   tsconfig-paths: 4.1.2
   tsup: 6.6.3_6qtx7vkbdhwvdm4crzlegk4mvi
@@ -1244,6 +1246,12 @@ packages:
       lilconfig: 2.0.6
       ts-node: 10.9.1_tncu2ai53lzgmizdedur7lbibe
       yaml: 1.10.2
+    dev: true
+
+  /prettier/2.8.4:
+    resolution: {integrity: sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
     dev: true
 
   /process-warning/2.1.0:
